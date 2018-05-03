@@ -1,10 +1,12 @@
 package android.coolweather.com.coolweather.db;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by CM-NB1 on 2018/5/3.
  */
 
-public class County {
+public class County extends DataSupport{
     //  countyName 记录县的名字，
     //  weatherId 记录县所对应的天气 id，
     //  cityId 记录当前县所属市的 id值

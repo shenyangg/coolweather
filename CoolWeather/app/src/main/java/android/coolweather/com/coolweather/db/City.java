@@ -1,10 +1,12 @@
 package android.coolweather.com.coolweather.db;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by CM-NB1 on 2018/5/3.
  */
 
-public class City {
+public class City extends DataSupport{
     //   cityName 记录市的名字，
     //   cityCode 记录市的代号，
     //   provinceId 记录当前市所属省的 id值

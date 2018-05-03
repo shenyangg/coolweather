@@ -1,10 +1,12 @@
 package android.coolweather.com.coolweather.db;
 
+import org.litepal.crud.DataSupport;
+
 /**
  * Created by CM-NB1 on 2018/5/3.
  */
 
-public class Province {
+public class Province extends DataSupport{
     //  id 是每个实体类中都应该有的字段，
     // provinceName 记录省的名字，
     // provinceCode
@@ -13,7 +15,7 @@ public class Province {
     private String provinceName;
     private int provinceCode;
 
-    public int getId() {
+    public static int getId() {
         return id;
     }
 
