@@ -19,6 +19,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
 import org.litepal.crud.DataSupport;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import okhttp3.Call;
+import okhttp3.Callback;
 import okhttp3.Response;
 
 /**
@@ -42,6 +44,7 @@ public class ChooseAreaFragment extends Fragment {
     private ListView listView;
     private ArrayAdapter<String> adapter;
     private List<String> dataList = new ArrayList<>();
+
     /**
      * 省列表
      */
@@ -183,11 +186,28 @@ public class ChooseAreaFragment extends Fragment {
         showProgressDialog();
         HttpUtil.sendOkHttpRequest(address, new Callback() {
             @Override
+            public void onFailure(Call call, IOException e) {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        closeProgressDialog();
+                        Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).
+                                show();
+                    }
+                });
+            }
+
+            @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String responseText = response.body().string();
                 boolean result = false;
                 if ("province".equals(type)) {
-                    result = Utility.handleProvinceResponse(responseText);
+
+                    try {
+                        result = Utility.handleProvinceResponse(responseText);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else if ("city".equals(type)) {
                     result = Utility.handleCityResponse(responseText,
                             selectedProvince.getId());
@@ -202,39 +222,18 @@ public class ChooseAreaFragment extends Fragment {
                             closeProgressDialog();
                             if ("province".equals(type)) {
 
+                                queryProvinces();
+                            } else if ("city".equals(type)) {
+                                queryCities();
+                            } else if ("county".equals(type)) {
+                                queryCounties();
                             }
-                            queryProvinces();
-                        } else if("city".
-
-                        equals(type))
-
-                        {
-                            queryCities();
-                        } else if("county".
-
-                        equals(type))
-
-                        {
-                            queryCounties();
                         }
-                    }
-                });
-            }
-        }
-        @Override
-        public void onFailure (Call call, IOException e){
-            // 通过 runOnUiThread()方法回到主线程处理逻辑
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    closeProgressDialog();
-                    Toast.makeText(getContext(), "加载失败", Toast.LENGTH_SHORT).
-                            show();
+                    });
                 }
-            });
-        }
-    });
-}
+            }
+        });
+    }
 
     /**
      * 显示进度对话框
@@ -258,5 +257,3 @@ public class ChooseAreaFragment extends Fragment {
     }
 }
 
-
-}
